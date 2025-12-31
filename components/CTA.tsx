@@ -41,11 +41,11 @@ const CTA: React.FC = () => {
     } Gostaria de solicitar o diagnóstico gratuito de dados.`;
 
     if (type === 'whatsapp') {
-      // Replace SEUNUMERO with the actual phone number
-      const url = `https://wa.me/SEUNUMERO?text=${encodeURIComponent(message)}`;
+      // Uses country code 55 + area code 19 + number
+      const url = `https://wa.me/5519993792916?text=${encodeURIComponent(message)}`;
       window.open(url, '_blank');
     } else {
-      // Replace seuemail@dominio.com with the actual email
+      // Replace seuemail@dominio.com with the actual email if provided
       const subject = `Solicitação de Diagnóstico - ${formData.company}`;
       const url = `mailto:seuemail@dominio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
       window.open(url, '_blank');

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ChartBarIcon, RocketLaunchIcon, LightBulbIcon } from './IconComponents';
+import { ChartBarIcon, CpuChipIcon, LightBulbIcon } from './IconComponents';
 import ScrollReveal from './ScrollReveal';
 
 const ValueCard: React.FC<{ icon: React.ReactNode; title: string; children: React.ReactNode }> = ({ icon, title, children }) => (
@@ -34,8 +34,8 @@ const ValueProposition: React.FC = () => {
             </ScrollReveal>
             
             <ScrollReveal delay={400} className="h-full">
-              <ValueCard icon={<RocketLaunchIcon className="w-6 h-6 text-white" />} title="Otimize Processos">
-                Reduza custos e elimine desperdícios. Mapeamos seus processos e aplicamos automações inteligentes para aumentar a eficiência da sua operação.
+              <ValueCard icon={<CpuChipIcon className="w-6 h-6 text-white" />} title="Análise Avançada com IA">
+                Vá além do óbvio. Utilizamos algoritmos inteligentes para identificar padrões ocultos de comportamento e oportunidades de crescimento que passariam despercebidas.
               </ValueCard>
             </ScrollReveal>
             

@@ -8,18 +8,19 @@ const ProgressBar: React.FC<{ label: string; value: number; suffix?: string; col
   const [width, setWidth] = useState(0);
   
   useEffect(() => {
-    setTimeout(() => setWidth(value), 300);
+    const timer = setTimeout(() => setWidth(value), 100);
+    return () => clearTimeout(timer);
   }, [value]);
 
   return (
-    <div className="mb-4">
-      <div className="flex justify-between mb-1">
-        <span className="text-sm font-medium text-neutral-light">{label}</span>
-        <span className="text-sm font-bold text-white">{value}{suffix}</span>
+    <div className="w-full flex flex-col justify-center h-full min-h-[120px]">
+      <div className="flex justify-between mb-2 items-end">
+        <span className="text-sm font-medium text-neutral-light leading-tight">{label}</span>
+        <span className="text-lg font-bold text-white">{value}{suffix}</span>
       </div>
-      <div className="w-full bg-gray-700 rounded-full h-2.5">
+      <div className="w-full bg-gray-700 rounded-full h-3">
         <div 
-          className={`${color} h-2.5 rounded-full transition-all duration-1000 ease-out`} 
+          className={`${color} h-3 rounded-full transition-all duration-1000 ease-out`} 
           style={{ width: `${width}%` }}
         ></div>
       </div>
@@ -28,23 +29,24 @@ const ProgressBar: React.FC<{ label: string; value: number; suffix?: string; col
 };
 
 const DonutChart: React.FC<{ percentage: number; label: string }> = ({ percentage, label }) => {
-  const radius = 30;
+  const radius = 35;
   const circumference = 2 * Math.PI * radius;
   const [offset, setOffset] = useState(circumference);
 
   useEffect(() => {
     const progress = percentage / 100;
     const dashoffset = circumference * (1 - progress);
-    setTimeout(() => setOffset(dashoffset), 300);
+    const timer = setTimeout(() => setOffset(dashoffset), 100);
+    return () => clearTimeout(timer);
   }, [percentage, circumference]);
 
   return (
-    <div className="flex flex-col items-center justify-center p-2">
-      <div className="relative w-24 h-24">
-        <svg className="w-full h-full transform -rotate-90">
+    <div className="flex flex-col items-center justify-center h-full min-h-[160px]">
+      <div className="relative w-24 h-24 sm:w-32 sm:h-32">
+        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
           <circle
-            cx="48"
-            cy="48"
+            cx="50"
+            cy="50"
             r={radius}
             stroke="currentColor"
             strokeWidth="8"
@@ -52,8 +54,8 @@ const DonutChart: React.FC<{ percentage: number; label: string }> = ({ percentag
             className="text-gray-700"
           />
           <circle
-            cx="48"
-            cy="48"
+            cx="50"
+            cy="50"
             r={radius}
             stroke="currentColor"
             strokeWidth="8"
@@ -65,43 +67,50 @@ const DonutChart: React.FC<{ percentage: number; label: string }> = ({ percentag
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-lg font-bold text-white">{percentage}%</span>
+          <span className="text-xl sm:text-2xl font-bold text-white">{percentage}%</span>
         </div>
       </div>
-      <span className="text-xs text-center mt-2 text-neutral-light">{label}</span>
+      <span className="text-sm text-center mt-3 text-neutral-light font-medium px-2">{label}</span>
     </div>
   );
 };
 
 const TrendChart: React.FC<{ data: number[]; label: string }> = ({ data, label }) => {
-  // Normalize data for SVG
   const max = Math.max(...data);
   const min = Math.min(...data);
   const range = max - min || 1;
   
   const points = data.map((val, i) => {
     const x = (i / (data.length - 1)) * 100;
-    const y = 100 - ((val - min) / range) * 80 - 10; // 10% padding
+    const y = 50 - (((val - min) / range) * 40 + 5); 
     return `${x},${y}`;
   }).join(' ');
 
   return (
-    <div className="w-full">
-      <div className="text-sm text-neutral-light mb-2">{label}</div>
-      <svg viewBox="0 0 100 50" className="w-full h-16 overflow-visible">
-        <polyline
-          fill="none"
-          stroke="#00B4D8"
-          strokeWidth="2"
-          points={points}
-          className="drop-shadow-[0_0_4px_rgba(0,180,216,0.5)]"
-        />
-        {data.map((val, i) => {
-           const x = (i / (data.length - 1)) * 100;
-           const y = 100 - ((val - min) / range) * 80 - 10;
-           return <circle key={i} cx={x} cy={y} r="2" fill="#fff" className="animate-ping opacity-75" style={{animationDuration: '2s', animationDelay: `${i * 0.1}s`}} />
-        })}
-      </svg>
+    <div className="w-full h-full min-h-[160px] flex flex-col justify-center p-2 overflow-hidden">
+      <div className="text-sm font-medium text-neutral-light mb-4">{label}</div>
+      <div className="flex-grow flex items-center w-full relative">
+        <svg viewBox="0 0 100 50" className="w-full h-auto overflow-visible" preserveAspectRatio="none">
+            <polyline
+            fill="none"
+            stroke="#00B4D8"
+            strokeWidth="2"
+            points={points}
+            strokeLinejoin="round"
+            className="drop-shadow-[0_0_4px_rgba(0,180,216,0.5)]"
+            />
+            {data.map((val, i) => {
+              const x = (i / (data.length - 1)) * 100;
+              const y = 50 - (((val - min) / range) * 40 + 5);
+              return (
+                <g key={i}>
+                  <circle cx={x} cy={y} r="1.5" fill="#fff" />
+                  <circle cx={x} cy={y} r="3" fill="#00B4D8" className="animate-ping opacity-40" style={{animationDuration: '3s', animationDelay: `${i * 0.2}s`}} />
+                </g>
+              );
+            })}
+        </svg>
+      </div>
     </div>
   );
 };
@@ -117,6 +126,7 @@ interface ChartData {
   data?: number[];
   suffix?: string;
   color?: string;
+  colSpan?: number; 
 }
 
 interface Project {
@@ -136,7 +146,7 @@ const projectsData: Project[] = [
     description: 'Identificamos que 20% dos produtos geravam 80% do lucro, enquanto 30% do estoque estava parado há mais de 90 dias.',
     image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
     charts: [
-      { type: 'trend', label: 'Crescimento de Vendas (Últimos 6 meses)', data: [12, 19, 15, 25, 32, 45] },
+      { type: 'trend', label: 'Crescimento de Vendas (6 meses)', data: [12, 19, 15, 25, 32, 45] }, 
       { type: 'donut', label: 'Meta Batida', value: 85 },
       { type: 'bar', label: 'Redução de Estoque Parado', value: 40, suffix: '%' }
     ]
@@ -150,7 +160,7 @@ const projectsData: Project[] = [
     charts: [
       { type: 'donut', label: 'Ocupação Agenda', value: 92 },
       { type: 'bar', label: 'Retenção de Pacientes', value: 78, suffix: '%' },
-      { type: 'bar', label: 'Redução de No-Show', value: 45, suffix: '%', color: 'bg-green-500' }
+      { type: 'bar', label: 'Redução de No-Show', value: 45, suffix: '%', color: 'bg-green-500', colSpan: 2 }
     ]
   },
   {
@@ -160,8 +170,8 @@ const projectsData: Project[] = [
     description: 'Monitoramento em tempo real da linha de produção. Identificamos o gargalo principal que aumentou a produção em 22% sem comprar novas máquinas.',
     image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
     charts: [
-      { type: 'bar', label: 'Eficiência Global (OEE)', value: 82, suffix: '%' },
       { type: 'trend', label: 'Produção Diária (Unidades)', data: [210, 205, 240, 235, 280, 310] },
+      { type: 'bar', label: 'Eficiência Global (OEE)', value: 82, suffix: '%' },
       { type: 'donut', label: 'Redução de Perdas', value: 65 }
     ]
   }
@@ -170,6 +180,11 @@ const projectsData: Project[] = [
 const Projects: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ProjectCategory>('loja');
   const activeProject = projectsData.find(p => p.id === activeTab);
+
+  const getColSpanClass = (chart: ChartData) => {
+    if (chart.colSpan) return `col-span-1 sm:col-span-${chart.colSpan}`;
+    return chart.type === 'trend' ? 'col-span-1 sm:col-span-2' : 'col-span-1';
+  };
 
   return (
     <section id="projetos" className="py-20 bg-neutral-dark">
@@ -202,7 +217,7 @@ const Projects: React.FC = () => {
         </ScrollReveal>
 
         {activeProject && (
-          <div key={activeTab} className="grid lg:grid-cols-2 gap-10 items-center">
+          <div key={activeTab} className="grid lg:grid-cols-2 gap-10 items-start">
             
             {/* Left: Description & Context */}
             <ScrollReveal className="order-2 lg:order-1">
@@ -225,37 +240,40 @@ const Projects: React.FC = () => {
             </ScrollReveal>
 
             {/* Right: Interactive Infographic Panel (Mock Dashboard) */}
-            <ScrollReveal delay={200} className="order-1 lg:order-2">
-              <div className="bg-neutral-medium border border-gray-700 rounded-2xl p-6 shadow-2xl relative">
-                {/* Header of Mock Dashboard */}
-                <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-700">
-                    <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    </div>
-                    <div className="text-xs text-gray-400 font-mono">DASHBOARD - {activeProject.name.toUpperCase()}</div>
+            <ScrollReveal delay={200} className="order-1 lg:order-2 pb-6 md:pb-0">
+              <div className="relative group">
+                {/* Main Dashboard Card */}
+                <div className="bg-neutral-medium border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-2xl relative">
+                  {/* Header of Mock Dashboard */}
+                  <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-700">
+                      <div className="flex items-center space-x-2">
+                          <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                          <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                      </div>
+                      <div className="text-[10px] text-gray-400 font-mono tracking-tighter sm:tracking-normal">DASHBOARD - {activeProject.name.toUpperCase()}</div>
+                  </div>
+
+                  {/* Dynamic Charts Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      {activeProject.charts.map((chart, index) => (
+                          <div key={index} className={`${getColSpanClass(chart)} bg-neutral-dark/50 p-4 rounded-xl border border-gray-800/50 flex flex-col justify-center overflow-hidden`}>
+                              {chart.type === 'bar' && (
+                                  <ProgressBar label={chart.label} value={chart.value || 0} suffix={chart.suffix} color={chart.color} />
+                              )}
+                              {chart.type === 'donut' && (
+                                  <DonutChart percentage={chart.value || 0} label={chart.label} />
+                              )}
+                              {chart.type === 'trend' && (
+                                  <TrendChart data={chart.data || []} label={chart.label} />
+                              )}
+                          </div>
+                      ))}
+                  </div>
                 </div>
 
-                {/* Dynamic Charts Grid */}
-                <div className="grid grid-cols-2 gap-6">
-                    {activeProject.charts.map((chart, index) => (
-                        <div key={index} className={`${chart.type === 'trend' ? 'col-span-2' : 'col-span-1'} bg-neutral-dark/50 p-4 rounded-xl`}>
-                            {chart.type === 'bar' && (
-                                <ProgressBar label={chart.label} value={chart.value || 0} suffix={chart.suffix} color={chart.color} />
-                            )}
-                            {chart.type === 'donut' && (
-                                <DonutChart percentage={chart.value || 0} label={chart.label} />
-                            )}
-                            {chart.type === 'trend' && (
-                                <TrendChart data={chart.data || []} label={chart.label} />
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                {/* Floating Analysis Badge */}
-                <div className="absolute -bottom-5 -right-5 bg-brand-blue text-white p-4 rounded-lg shadow-lg max-w-[200px] text-sm animate-bounce-slow hidden md:block">
+                {/* Floating Analysis Badge - Now positioned outside the main card padding to avoid clipping */}
+                <div className="absolute -bottom-4 -right-2 md:-right-6 bg-brand-blue text-white p-3 sm:p-4 rounded-lg shadow-xl max-w-[150px] sm:max-w-[200px] text-[10px] sm:text-sm animate-bounce-slow hidden md:block z-20 border border-brand-light-blue/20">
                     💡 <strong>Insight IA:</strong> Otimização detectada com potencial de +15% de margem.
                 </div>
               </div>

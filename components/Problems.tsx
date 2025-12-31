@@ -8,7 +8,7 @@ const problems = [
     "Erros recorrentes em estoque, vendas ou caixa.",
     "Dificuldade em acompanhar metas e resultados.",
     "Falta de padronização e confiança nos dados.",
-    "Tempo perdido preenchendo planilhas manuais.",
+    "Dificuldade em identificar padrões e tendências nos dados.",
     "Incerteza sobre qual decisão tomar para crescer.",
 ];
 

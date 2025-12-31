@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PresentationChartLineIcon, Cog6ToothIcon, TableCellsIcon, ClipboardDocumentCheckIcon, CpuChipIcon, LightBulbIcon } from './IconComponents';
 import ScrollReveal from './ScrollReveal';
 
@@ -41,11 +41,61 @@ const solutionSteps: SolutionStep[] = [
     id: 4,
     icon: <CpuChipIcon className="w-8 h-8 text-white" />,
     title: 'Inteligência Artificial',
-    shortTitle: 'Automação & IA',
+    shortTitle: 'IA',
     description: 'Previsão e eficiência.',
-    details: 'Aplicamos algoritmos para prever vendas, automatizar atendimento e gerar insights proativos sobre o comportamento do seu cliente.',
+    details: 'Aplicamos algoritmos para prever vendas e gerar insights proativos sobre o comportamento do seu cliente.',
   },
 ];
+
+const SolutionCardContent: React.FC<{ step: SolutionStep }> = ({ step }) => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    setProgress(0);
+    const timer = setTimeout(() => {
+      setProgress(step.id * 25);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [step]);
+
+  return (
+    <div className="bg-neutral-dark border border-gray-700 p-8 rounded-2xl shadow-2xl h-full flex flex-col justify-center relative overflow-hidden">
+      {/* Decoration */}
+      <div className="absolute top-0 right-0 p-4 opacity-10">
+         {step.icon}
+      </div>
+      
+      <div className="flex items-center gap-3 mb-4">
+        <span className="text-6xl font-black text-brand-dark/20 absolute top-4 right-4 text-neutral-800 select-none">0{step.id}</span>
+        <div className="p-2 bg-brand-blue/20 rounded-lg">
+          {step.icon}
+        </div>
+        <h3 className="text-2xl font-bold text-white">{step.title}</h3>
+      </div>
+      
+      <h4 className="text-xl text-brand-blue font-semibold mb-4">{step.description}</h4>
+      <p className="text-neutral-light text-lg leading-relaxed">
+        {step.details}
+      </p>
+
+      {/* Interactive Progress Bar simulating data processing */}
+      <div className="mt-6 w-full">
+        <div className="flex justify-between text-xs text-neutral-500 mb-1 font-mono">
+          <span>Processamento</span>
+          <span className="text-brand-blue">{progress}%</span>
+        </div>
+        <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden relative shadow-inner">
+          <div 
+            className="bg-gradient-to-r from-brand-blue to-cyan-300 h-2 rounded-full relative transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(0,180,216,0.6)]" 
+            style={{ width: `${progress}%` }}
+          >
+             <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Solutions: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(1);
@@ -107,34 +157,11 @@ const Solutions: React.FC = () => {
           </ScrollReveal>
 
           {/* Right: Detail Card */}
-          <div className="w-full lg:w-1/2 h-[300px]">
+          <div className="w-full lg:w-1/2 h-[350px]"> {/* Slightly increased height for comfort */}
             {solutionSteps.map((step) => (
               activeStep === step.id && (
                 <ScrollReveal key={step.id} className="h-full">
-                  <div className="bg-neutral-dark border border-gray-700 p-8 rounded-2xl shadow-2xl h-full flex flex-col justify-center relative overflow-hidden">
-                    {/* Decoration */}
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                       {step.icon}
-                    </div>
-                    
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="text-6xl font-black text-brand-dark/20 absolute top-4 right-4 text-neutral-800 select-none">0{step.id}</span>
-                      <div className="p-2 bg-brand-blue/20 rounded-lg">
-                        {step.icon}
-                      </div>
-                      <h3 className="text-2xl font-bold text-white">{step.title}</h3>
-                    </div>
-                    
-                    <h4 className="text-xl text-brand-blue font-semibold mb-4">{step.description}</h4>
-                    <p className="text-neutral-light text-lg leading-relaxed">
-                      {step.details}
-                    </p>
-
-                    {/* Interactive Progress Bar simulating data processing */}
-                    <div className="mt-6 w-full bg-gray-800 rounded-full h-2 overflow-hidden">
-                      <div className="bg-brand-blue h-2 rounded-full animate-pulse" style={{ width: `${step.id * 25}%` }}></div>
-                    </div>
-                  </div>
+                  <SolutionCardContent step={step} />
                 </ScrollReveal>
               )
             ))}

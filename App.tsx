@@ -10,6 +10,7 @@ import Differentiators from './components/Differentiators';
 import Testimonials from './components/Testimonials';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
+import AIAssistant from './components/AIAssistant';
 
 const App: React.FC = () => {
   return (
@@ -26,6 +27,7 @@ const App: React.FC = () => {
         <CTA />
       </main>
       <Footer />
+      <AIAssistant />
     </div>
   );
 };
