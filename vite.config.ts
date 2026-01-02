@@ -1,28 +1,35 @@
-import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig, loadEnv } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
-export default defineConfig({
-  root: '.',
-  plugins: [react()],
-  base: './'
-})
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
 
   return {
-    base: './', // 👈 ESSENCIAL para Netlify
+    // 🔥 ESSENCIAL para evitar o problema do "/" automático
+    base: './',
+
+    plugins: [react()],
+
     server: {
       port: 3000,
-      host: '0.0.0.0',
+      host: true,
     },
-    plugins: [react()],
+
+    build: {
+      outDir: 'dist',
+      assetsDir: 'assets',
+      emptyOutDir: true,
+    },
+
     define: {
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
+
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(__dirname, 'src'),
       },
     },
-  };
-});
+  }
+})
