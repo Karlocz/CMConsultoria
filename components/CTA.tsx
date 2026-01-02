@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { EnvelopeIcon, ChatBubbleOvalLeftEllipsisIcon, ExclamationCircleIcon } from './IconComponents';
+import { EnvelopeIcon, ChatBubbleOvalLeftEllipsisIcon, ExclamationCircleIcon, LinkedInIcon, InstagramIcon, FacebookIcon } from './IconComponents';
 import ScrollReveal from './ScrollReveal';
 
 const CTA: React.FC = () => {
@@ -41,20 +41,23 @@ const CTA: React.FC = () => {
     } Gostaria de solicitar o diagnóstico gratuito de dados.`;
 
     if (type === 'whatsapp') {
-      // Uses country code 55 + area code 19 + number
       const url = `https://wa.me/5519993792916?text=${encodeURIComponent(message)}`;
       window.open(url, '_blank');
     } else {
-      // Replace seuemail@dominio.com with the actual email if provided
       const subject = `Solicitação de Diagnóstico - ${formData.company}`;
-      const url = `mailto:seuemail@dominio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+      const url = `mailto:contato@cmconsultoria.com.br?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
       window.open(url, '_blank');
     }
   };
 
+  const socialLinks = [
+    { icon: <LinkedInIcon className="w-6 h-6" />, href: "https://www.linkedin.com/company/cm-consultoria-de-dados", label: "LinkedIn" },
+    { icon: <InstagramIcon className="w-6 h-6" />, href: "https://www.instagram.com/cmconsultoria.dados", label: "Instagram" },
+    { icon: <FacebookIcon className="w-6 h-6" />, href: "https://www.facebook.com/cmconsultoriadados", label: "Facebook" },
+  ];
+
   return (
     <section id="contato" className="py-20 bg-neutral-medium relative overflow-hidden">
-      {/* Decorative background element */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-10">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-brand-blue rounded-full blur-3xl"></div>
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-navy rounded-full blur-3xl"></div>
@@ -63,7 +66,6 @@ const CTA: React.FC = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           
-          {/* Left Column: Sales Copy */}
           <div className="text-left">
             <ScrollReveal>
               <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
@@ -89,13 +91,11 @@ const CTA: React.FC = () => {
             </ScrollReveal>
           </div>
 
-          {/* Right Column: Form */}
           <ScrollReveal delay={200}>
             <div className="bg-neutral-dark p-8 rounded-2xl shadow-2xl border border-gray-800">
               <h3 className="text-2xl font-bold text-white mb-6">Fale com um Especialista</h3>
               
               <div className="space-y-5">
-                {/* Name Input */}
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-neutral-light mb-1">
                     Seu Nome <span className="text-brand-blue">*</span>
@@ -120,7 +120,6 @@ const CTA: React.FC = () => {
                   )}
                 </div>
 
-                {/* Company Input */}
                 <div>
                   <label htmlFor="company" className="block text-sm font-medium text-neutral-light mb-1">
                     Nome da Empresa <span className="text-brand-blue">*</span>
@@ -145,7 +144,6 @@ const CTA: React.FC = () => {
                   )}
                 </div>
 
-                {/* Challenge Input (Optional) */}
                 <div>
                   <label htmlFor="challenge" className="block text-sm font-medium text-neutral-light mb-1">
                     Principal Desafio (Opcional)
@@ -160,7 +158,6 @@ const CTA: React.FC = () => {
                   />
                 </div>
 
-                {/* Buttons */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <button
                     onClick={() => handleContact('whatsapp')}
@@ -179,8 +176,29 @@ const CTA: React.FC = () => {
                   </button>
                 </div>
                 <p className="text-xs text-center text-gray-500 mt-2">
-                  Ao clicar, você será redirecionado para o app escolhido com uma mensagem pré-preenchida.
+                  Ao clicar, você será redirecionado para o app escolhido.
                 </p>
+
+                {/* Social Media Section */}
+                <div className="mt-8 pt-6 border-t border-gray-800">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-4">
+                    Siga a CM Consultoria
+                  </p>
+                  <div className="flex justify-center gap-8">
+                    {socialLinks.map((social, idx) => (
+                      <a 
+                        key={idx}
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-500 hover:text-brand-blue transition-all duration-300 transform hover:scale-125"
+                        aria-label={social.label}
+                      >
+                        {social.icon}
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </ScrollReveal>
